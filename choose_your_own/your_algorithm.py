@@ -7,7 +7,8 @@ from class_vis import prettyPicture
 features_train, labels_train, features_test, labels_test = makeTerrainData()
 
 
-### the training data (features_train, labels_train) have both "fast" and "slow" points mixed
+### the training data (features_train, labels_train) have both "fast" and 
+#"slow" points mixed
 ### in together--separate them so we can give them different colors in the scatterplot,
 ### and visually identify them
 grade_fast = [features_train[ii][0] for ii in range(0, len(features_train)) if labels_train[ii]==0]
@@ -31,10 +32,11 @@ plt.show()
 ### your code here!  name your classifier object clf if you want the 
 ### visualization code (prettyPicture) to show you the decision boundary
 
+from sklearn.neighbors import KNeighborsClassifier
 
-
-
-
+clf = KNeighborsClassifier(n_neighbors=13)
+clf.fit(features_train, labels_train) 
+acc = clf.score(features_test,labels_test)
 
 
 
