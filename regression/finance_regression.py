@@ -37,12 +37,16 @@ test_color = "r"
 ### your regression goes here!
 ### please name it reg, so that the plotting code below picks it up and 
 ### plots it correctly
+from sklearn import linear_model
+reg = linear_model.LinearRegression()
+reg.fit(feature_train,target_train)
+print 'Slope is %s'%reg.coef_
+print 'Intercept is %s' %reg.intercept_
+print 'Score (R^2) for training data is %s'%reg.score(feature_train,
+target_train)
 
-
-
-
-
-
+print 'Score (R^2) for test data is %s'%reg.score(feature_test,
+target_test)
 
 
 ### draw the scatterplot, with color-coded training and testing points
@@ -56,15 +60,18 @@ for feature, target in zip(feature_train, target_train):
 plt.scatter(feature_test[0], target_test[0], color=test_color, label="test")
 plt.scatter(feature_test[0], target_test[0], color=train_color, label="train")
 
-
-
+ 
 
 ### draw the regression line, once it's coded
 try:
     plt.plot( feature_test, reg.predict(feature_test) )
 except NameError:
     pass
+reg.fit(feature_test, target_test)
+
+plt.plot(feature_train, reg.predict(feature_train), color="r")
 plt.xlabel(features_list[1])
 plt.ylabel(features_list[0])
 plt.legend()
 plt.show()
+print 'Outliers removed: slope is %s'%reg.coef_
