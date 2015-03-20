@@ -70,7 +70,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random
 ###############################################################################
 # Compute a PCA (eigenfaces) on the face dataset (treated as unlabeled
 # dataset): unsupervised feature extraction / dimensionality reduction
-n_components = 150
+n_components = 150 
 
 print "Extracting the top %d eigenfaces from %d faces" % (n_components, X_train.shape[0])
 t0 = time()
@@ -147,3 +147,39 @@ eigenface_titles = ["eigenface %d" % i for i in range(eigenfaces.shape[0])]
 plot_gallery(eigenfaces, eigenface_titles, h, w)
 
 pl.show()
+
+# How much of the variance is explained by the first principal component? The second?
+print 'Variance explained by first PC is: ', pca.explained_variance_ratio_[0]
+print 'Variance explained by second PC is: ', pca.explained_variance_ratio_[1]
+
+# f1 score of ariel 
+from sklearn.metrics import f1_score
+n_components_array =[10, 15, 25, 50, 100, 250]
+
+for n_components in n_components_array:
+    pca = RandomizedPCA(n_components=n_components, whiten=True).fit(X_train)
+    eigenfaces = pca.components_.reshape((n_components, h, w))
+    X_train_pca = pca.transform(X_train)
+    X_test_pca = pca.transform(X_test)
+    
+    param_grid = {
+             'C': [1e3, 5e3, 1e4, 5e4, 1e5],
+              'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1],
+              }
+    clf = GridSearchCV(SVC(kernel='rbf', class_weight='auto'), param_grid)
+    clf = clf.fit(X_train_pca, y_train)
+    y_pred = clf.predict(X_test_pca)
+    
+    
+    #y_true = [0, 1, 2, 0, 1, 2]
+    #y_pred = [0, 2, 1, 0, 0, 1]
+    #classification_report(y_test, y_pred)
+    #f1_score(y_true, y_pred, labels=None, pos_label=1, average='weighted', sample_weight=None)
+    
+    #y_true = np.array([0, 1, 2, 2, 2])
+    #y_pred = np.array([0, 0, 2, 2, 1])
+    #target_names = ['class 0', 'class 1', 'class 2']
+    f1_vals = f1_score(y_test, y_pred, labels=None, pos_label=None, 
+             average=None, sample_weight=None)
+             
+    print 'f1 score for Ariel is ', f1_vals[0],'for n_component =', n_components        
