@@ -6,8 +6,8 @@ numpy.random.seed(42)
 
 
 ### the words (features) and authors (labels), already largely processed
-words_file = "word_data_overfit.pkl" ### like the file you made in the last mini-project 
-authors_file = "email_authors_overfit.pkl"  ### this too
+words_file = "../text_learning/your_word_data.pkl" ### like the file you made in the last mini-project 
+authors_file = "../text_learning/your_email_authors.pkl"  ### this too
 word_data = pickle.load( open(words_file, "r"))
 authors = pickle.load( open(authors_file, "r") )
 
@@ -15,7 +15,9 @@ authors = pickle.load( open(authors_file, "r") )
 
 ### test_size is the percentage of events assigned to the test set (remainder go into training)
 from sklearn import cross_validation
-features_train, features_test, labels_train, labels_test = cross_validation.train_test_split(word_data, authors, test_size=0.1, random_state=42)
+features_train, features_test, labels_train, labels_test = \
+cross_validation.train_test_split(word_data, authors,
+                                  test_size=0.1, random_state=42)
 
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -34,6 +36,13 @@ labels_train   = labels_train[:150]
 
 
 ### your code goes here
+from sklearn import tree
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(features_train, labels_train)
+acc = clf.score(features_test, labels_test)
 
+import numpy as np
+feature_importance = clf.feature_importances_
+importance, number = max(feature_importance),np.where(feature_importance==max(feature_importance))
 
-
+print 'Outlier is ', vectorizer.get_feature_names()[number[0]]
