@@ -37,4 +37,9 @@ clf = DecisionTreeClassifier()
 clf.fit(features_train,labels_train)
 clf.predict(features_test)
 print ('Accuracy of test data is %.2f') %(clf.score(features_test,labels_test))
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 3f5b16c8f4a0794ac03080e8d9bea032fd886abf
 
